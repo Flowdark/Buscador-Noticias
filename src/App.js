@@ -1,0 +1,50 @@
+import React, { Fragment, useState, useEffect } from 'react';
+import Header from "./Componentes/Header";
+import Formulario from "./Componentes/Formulario";
+import ListadoNoticias from "./Componentes/ListadoNoticias";
+
+function App() {
+
+  //Definir Categoria y Noticias
+
+  const [ categoria, guardarCategoria ] = useState("");
+
+  const [ noticias, guardarNoticias ] = useState([]);
+
+  useEffect( () => {
+
+    const consultarAPI = async () => {
+      
+      const url = (`http://newsapi.org/v2/top-headlines?country=us&category=${categoria}&apiKey=b6b4003770f84529b394aaf4660bc52e`);
+
+      const respuesta = await fetch(url);
+      const noticias = await respuesta.json();
+
+      guardarNoticias(noticias.articles);
+
+    }
+
+    consultarAPI();
+
+  }, [categoria] );
+
+  return (
+    <Fragment>
+      <Header 
+        titulo="Buscador de Noticias"
+      />
+
+      <div className="container white">
+        <Formulario 
+          guardarCategoria={guardarCategoria}
+        />
+
+        <ListadoNoticias 
+          noticias={noticias}
+        />
+      </div>
+    </Fragment>
+  );
+}
+
+export default App;
